@@ -73,7 +73,9 @@ set(config_module_list
 	lib/terrain_estimation
 	lib/version
 
+	# Tutorial app
 	examples/px4_simple_app
+
 	examples/mc_att_control_multiplatform
 	examples/mc_pos_control_multiplatform
 	examples/ekf_att_pos_estimator
