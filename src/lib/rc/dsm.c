@@ -518,7 +518,7 @@ dsm_decode(hrt_abstime frame_time, uint16_t *values, uint16_t *num_values, bool 
 #ifdef DSM_DEBUG
 			printf("DSM: VALUE RANGE FAIL: %d: %d\n", (int)i, (int)values[i]);
 #endif
-			dsm_chan_count = 0;
+			*num_values = 0;
 			return false;
 		}
 	}
@@ -594,7 +594,7 @@ dsm_input(int fd, uint16_t *values, uint16_t *num_values, bool *dsm_11_bit, uint
 }
 
 bool
-dsm_parse(uint64_t now, uint8_t *frame, unsigned len, uint16_t *values,
+dsm_parse(const uint64_t now, const uint8_t *frame, const unsigned len, uint16_t *values,
 	  uint16_t *num_values, bool *dsm_11_bit, unsigned *frame_drops, uint16_t max_channels)
 {
 
@@ -682,8 +682,6 @@ dsm_parse(uint64_t now, uint8_t *frame, unsigned len, uint16_t *values,
 #endif
 			decode_ret = false;
 		}
-
-
 	}
 
 	if (frame_drops) {
@@ -691,10 +689,7 @@ dsm_parse(uint64_t now, uint8_t *frame, unsigned len, uint16_t *values,
 	}
 
 	if (decode_ret) {
-		/* num values should not decrease, only increase */
-		if (dsm_chan_count > *num_values) {
-			*num_values = dsm_chan_count;
-		}
+		*num_values = dsm_chan_count;
 
 		memcpy(&values[0], &dsm_chan_buf[0], dsm_chan_count * sizeof(dsm_chan_buf[0]));
 #ifdef DSM_DEBUG
